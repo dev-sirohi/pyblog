@@ -2,13 +2,14 @@ from fastapi import APIRouter, Depends, Response
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from database_service import get_db
+from dtos.auth_response_dto import AuthResponseDto
 from dtos.login_request_dto import LoginRequestDto
 from dtos.sign_up_request_dto import SignUpRequestDto
-from dtos.auth_response_dto import AuthResponseDto
-from services.authentication_service import register_user, login_user
 from rate_limiter import rate_limiter
+from services.authentication_service import register_user, login_user
 
 authentication_router = APIRouter(prefix="/auth", tags=["auth"])
+
 
 @authentication_router.post("/login", response_model=AuthResponseDto)
 @rate_limiter.limit("10/hour")
@@ -25,7 +26,7 @@ async def login(request: LoginRequestDto, response: Response, db: AsyncSession =
     return user
 
 
-@authentication_router.post("/signup", response_model=AuthResponseDto)
+@authentication_router.post("/register", response_model=AuthResponseDto)
 @rate_limiter.limit("10/day")
 async def signup(request: SignUpRequestDto, response: Response, db: AsyncSession = Depends(get_db)):
     user, token = await register_user(db, request.username, request.email, request.password)

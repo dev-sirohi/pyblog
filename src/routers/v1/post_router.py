@@ -1,12 +1,12 @@
-from fastapi import APIRouter, Depends, Response, Request
+from fastapi import APIRouter, Depends, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from database_service import get_db
 from dtos.create_post_dto import CreatePostDto
-from rate_limiter import rate_limiter
-from services.auth_deps import get_current_user
-from services import post_service
 from models.user import User
+from rate_limiter import rate_limiter
+from services import post_service
+from services.auth_deps import get_current_user
 
 post_router = APIRouter(prefix="/post", tags=["post"])
 
