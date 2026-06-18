@@ -8,7 +8,7 @@ from rate_limiter import rate_limiter
 from services import post_service
 from services.auth_deps import get_current_user
 
-post_router = APIRouter(prefix="/post", tags=["post"])
+post_router = APIRouter(prefix="/v1/post", tags=["post"])
 
 
 @post_router.get("/{post_id}")

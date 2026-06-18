@@ -1,3 +1,8 @@
+from dotenv import load_dotenv
+from starlette.middleware.cors import CORSMiddleware
+
+load_dotenv()
+
 from fastapi import FastAPI
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
@@ -9,6 +14,14 @@ from routers.v1.post_router import post_router
 from routers.v1.user_router import user_router
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+);
 
 app.state.limiter = rate_limiter  # required by slowapi, no use for us
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)

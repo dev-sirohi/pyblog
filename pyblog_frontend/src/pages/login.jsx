@@ -2,9 +2,10 @@ import { Box, Button, TextField, Typography } from '@mui/material';
 import { useState } from 'react';
 import { Endpoints } from '../endpoints.js';
 import { useToast } from '../hooks/useToast.js';
-import { post_with_body } from '../api_utils.js';
+import { call_api, post_with_body } from '../api_utils.js';
 import { useNavigate } from 'react-router-dom';
 import { Route } from '../page_links.js';
+import { isEmptyOrNull } from '../string_utils.js';
 
 const fieldWidth = {
     xs: '90%',
@@ -20,19 +21,20 @@ function Login() {
     const navigate = useNavigate();
 
     const initLogin = async () => {
-        if (!email) {
+        if (isEmptyOrNull(email)) {
             setEmail('');
             toast.success('Email is required');
             return;
         }
-        if (!password) {
+        if (isEmptyOrNull(password)) {
             setPassword('');
             toast.success('Password is required');
             return;
         }
         try {
-            const response_data = await post_with_body(Endpoints.Auth.Login, {
+            const response_data = await call_api(Endpoints.Auth.Login, {
                 email: email,
+                username: email,
                 password: password,
             });
             toast.success('Successfully logged in');

@@ -16,6 +16,7 @@ export default defineConfig([
         rules: {
             'no-unused-vars': 'off',
             'preserve-caught-error': 'off',
+            'react-hooks/set-state-in-effect': 'off',
         },
     },
 ]);

@@ -1,11 +1,42 @@
 import { isEmptyOrNull } from './string_utils.js';
-import { Base } from './endpoints.js';
+import { Base, HttpVerb, PayloadType } from './endpoints.js';
 
-export const HttpVerb = {
-    GET: 'GET',
-    POST: 'POST',
-    PUT: 'PUT',
-    DELETE: 'DELETE',
+export const call_api = async ({ url = '', method = '', payloadType = '' }, payload = {}) => {
+    if (isEmptyOrNull(url, true)) {
+        throw new Error('Invalid url');
+    }
+    if (!Object.keys(HttpVerb).includes(method)) {
+        throw new Error('Invalid method');
+    }
+    if (!Object.keys(PayloadType).includes(payloadType)) {
+        throw new Error('Invalid payloadType');
+    }
+    let response, data;
+    try {
+        if (payloadType === PayloadType.QUERY) {
+            response = await fetch(Base.concat(url).concat('?').concat(buildQueryParamStr(payload)), {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+        } else {
+            response = await fetch(Base.concat(url), {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload),
+            });
+        }
+        data = await response.json();
+    } catch (error) {
+        throw new Error('Network error');
+    }
+    if (!response.ok) {
+        throw new Error(data.Message);
+    }
+    return data;
 };
 
 export const get = async (endpoint = '') => {
